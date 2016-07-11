@@ -3,6 +3,7 @@
 : ${CLOUDWAY_DOMAIN:=example.com}
 export CLOUDWAY_DOMAIN
 
+chmod 0640 /usr/local/cloudway/conf/cloudway.conf
 if [ "$CLOUDWAY_DOMAIN" != 'example.com' ]; then
     sed -i "s/example\\.com/$CLOUDWAY_DOMAIN/g" /usr/local/cloudway/conf/cloudway.conf
 fi
@@ -15,9 +16,9 @@ if [ -z "$CLOUDWAY_SCM_URL" -a -n "$BITBUCKET_ENV_BITBUCKET_URL" ]; then
     BITBUCKET_PASS=$BITBUCKET_ENV_BITBUCKET_PASSWORD
     BITBUCKET_URL="http://${BITBUCKET_USER}:${BITBUCKET_PASS}@${BITBUCKET_HOST}:${BITBUCKET_PORT}"
 
-    export CLOUDWAY_SCM_TYPE=bitbucket
-    export CLOUDWAY_SCM_URL=$BITBUCKET_URL
-    export CLOUDWAY_SCM_CLONE_URL="git clone ssh://git@git.${CLOUDWAY_DOMAIN}:7999/<namespace>/<repo>.git"
+    cwman config "scm.type" "bitbucket"
+    cwman config "scm.url" "$BITBUCKET_URL"
+    cwman config "scm.clone_url" "git clone ssh://git@git.${CLOUDWAY_DOMAIN}:7999/<namespace>/<repo>.git"
 fi
 
 # configure postfix
@@ -43,14 +44,11 @@ EOF
     echo $password | saslpasswd2 -p -c -u $CLOUDWAY_DOMAIN $username
     chown postfix.sasl /etc/sasldb2
 
-    sed -i -e '/^\[smtp\]/,/^\[/{
-      s/#host = .*/host = 127.0.0.1/
-      s/#port = .*/port = 25/
-      s/#username = .*/username = '$username'/
-      s/#password = .*/password = '$password'/
-      s/#from = .*/from = Cloudway <'$username'@'$CLOUDWAY_DOMAIN'>/
-    }' conf/cloudway.conf
-    chmod 0640 conf/cloudway.conf
+    cwman config "smtp.host"     "127.0.0.1"
+    cwman config "smtp.port"     "25"
+    cwman config "smtp.username" "$username"
+    cwman config "smtp.password" "$password"
+    cwman config "smtp.from"     "Cloudway <${username}@${CLOUDWAY_DOMAIN}>"
 
     cat > /usr/local/bin/postfix.sh <<EOF
 #!/bin/bash -e
