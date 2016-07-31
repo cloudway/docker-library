@@ -11,4 +11,4 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 ENV PIP_INDEX_URL https://pypi.douban.com/simple
-RUN pip install mysqlclient psycopg2 gunicorn virtualenv
+RUN pip install mysqlclient psycopg2 virtualenv uwsgi
