@@ -21,6 +21,7 @@ RUN apt-get clean && apt-get update && apt-get install -y --no-install-recommend
     dpkg-sig \
     gcc-mingw-w64 \
     git \
+    ssh-client \
     jq \
     libtool \
     mercurial \
