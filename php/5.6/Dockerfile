@@ -7,7 +7,7 @@ RUN apt-get update \
  && apt-get install -y libpng12-dev libjpeg-dev libpq-dev \
  && rm -rf /var/lib/apt/lists/* \
  && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
- && docker-php-ext-install gd opcache mysqli pgsql
+ && docker-php-ext-install gd opcache mysqli pgsql pdo_mysql pdo_pgsql
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opache.installation.php
