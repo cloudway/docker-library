@@ -2,6 +2,8 @@
 
 FROM debian:jessie
 
+RUN mkdir -p /var/cache/apt/archives && touch /var/cache/apt/archives/lock
+
 # add llvm repo
 RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 6084F3CF814B57C1CF12EFD515CF4D18AF4F7421 \
 	|| apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 6084F3CF814B57C1CF12EFD515CF4D18AF4F7421
@@ -51,7 +53,7 @@ ENV PATH /osxcross/target/bin:$PATH
 # Install Go
 # IMPORTANT: If the version of Go is updated, the Windows to Linux CI machines
 #            will need updating, to avoid errors.
-ENV GO_VERSION 1.7
+ENV GO_VERSION 1.12
 RUN curl -fsSL "https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz" \
     | tar -xzC /usr/local
 ENV PATH /go/bin:/usr/local/go/bin:$PATH
